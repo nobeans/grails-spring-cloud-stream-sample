@@ -19,8 +19,30 @@ spring:
         template:
             check-template-location: false
 
-# Spring Actuator Endpoints are Disabled by Default
-endpoints:
+---
+management:
+  endpoints:
+    enabled-by-default: true
+  security:
     enabled: false
-    jmx:
-        enabled: true
+
+---
+spring:
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: topic1
+          contentType: text/plain
+          #contentType: application/json
+        output:
+          destination: topic1
+          contentType: text/plain
+          #contentType: application/json
+      kafka:
+        binder:
+          brokers: 127.0.0.1
+          defaultBrokerPort: 9092
+          zkNodes: 127.0.0.1
+          defaultZkPort: 2181
+          autoCreateTopics: false
