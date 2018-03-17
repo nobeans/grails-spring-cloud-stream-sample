@@ -139,7 +139,7 @@ spring:
   cloud:
     stream:
       bindings:
-        input:
+        grails-input:
           destination: topic1
           contentType: text/plain
           #contentType: application/json
