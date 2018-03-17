@@ -15,8 +15,9 @@ class MessageProducer {
     @Autowired
     Source source
 
-    void produce(String message) {
-        source.output().send(MessageBuilder.withPayload(message).build())
-        log.info "Produced: $message"
+    void produce(String text) {
+        def message = MessageBuilder.withPayload([text: text]).build()
+        source.output().send(message)
+        log.info "Produced: ${message.dump()}"
     }
 }

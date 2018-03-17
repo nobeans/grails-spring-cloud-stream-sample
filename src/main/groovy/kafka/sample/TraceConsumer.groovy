@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 class TraceConsumer {
 
     @StreamListener(GrailsSink.INPUT)
-    void trace(String payload) {
-        log.info "Consumed: " + payload
+    void trace(Map<String, Object> payload) {
+        log.info "Consumed: " + payload.dump()
     }
 }

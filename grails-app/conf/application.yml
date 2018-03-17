@@ -82,12 +82,10 @@ spring:
       bindings:
         grails-input:
           destination: topic1
-          contentType: text/plain
-          #contentType: application/json
+          contentType: application/json
         output:
           destination: topic1
-          contentType: text/plain
-          #contentType: application/json
+          contentType: application/json
       kafka:
         binder:
           brokers: 127.0.0.1
