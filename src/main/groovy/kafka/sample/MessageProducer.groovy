@@ -16,4 +16,17 @@ class MessageProducer {
         source.output().send(message)
         log.info "Produced: ${message.dump()}"
     }
+
+    void startProducingPeriodicallyInThread(String message, int intervalMsec) {
+        Thread.start {
+            try {
+                while (true) {
+                    sleep intervalMsec
+                    produce(message)
+                }
+            } catch (e) {
+                log.error "Failed and terminated running MessageProducer periodically", e
+            }
+        }
+    }
 }
