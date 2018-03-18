@@ -19,6 +19,11 @@ class Application extends GrailsAutoConfiguration {
     }
 
     @Bean
+    BinaryProducer binaryProducer() {
+        new BinaryProducer()
+    }
+
+    @Bean
     TraceConsumer traceConsumer() {
         new TraceConsumer()
     }
