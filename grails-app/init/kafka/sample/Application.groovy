@@ -8,7 +8,6 @@ import kafka.grails.GrailsSink
 import org.springframework.cloud.stream.annotation.EnableBinding
 import org.springframework.cloud.stream.messaging.Source
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Profile
 
 @Slf4j
 @EnableBinding([Source, GrailsSink])
@@ -24,7 +23,6 @@ class Application extends GrailsAutoConfiguration {
     }
 
     @Bean
-    @Profile("development")
     TraceConsumer traceConsumer() {
         new TraceConsumer()
     }

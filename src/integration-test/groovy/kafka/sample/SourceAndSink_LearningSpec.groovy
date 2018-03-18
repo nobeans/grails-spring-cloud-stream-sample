@@ -8,10 +8,12 @@ import org.springframework.cloud.stream.messaging.Source
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageHandler
 import org.springframework.messaging.support.MessageBuilder
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.util.concurrent.atomic.AtomicBoolean
 
+@Ignore("This works only without spring-cloud-stream-test-support")
 @Integration
 class SourceAndSink_LearningSpec extends Specification {
 
