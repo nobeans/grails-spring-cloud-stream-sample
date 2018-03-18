@@ -1,7 +1,6 @@
 package sample
 
 import groovy.util.logging.Slf4j
-import grails.GrailsSink
 import org.springframework.cloud.stream.annotation.StreamListener
 
 @Slf4j

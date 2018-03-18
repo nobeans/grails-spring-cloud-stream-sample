@@ -2,7 +2,6 @@ package sample
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
-import grails.GrailsSink
 import org.springframework.cloud.stream.annotation.EnableBinding
 import org.springframework.cloud.stream.messaging.Source
 import org.springframework.context.annotation.Bean

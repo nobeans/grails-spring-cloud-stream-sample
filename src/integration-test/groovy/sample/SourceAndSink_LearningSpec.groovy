@@ -2,7 +2,6 @@ package sample
 
 import grails.testing.mixin.integration.Integration
 import groovy.json.JsonSlurper
-import grails.GrailsSink
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cloud.stream.messaging.Source
 import org.springframework.messaging.Message
