@@ -1,4 +1,4 @@
-package kafka.sample
+package sample
 
 class BootStrap {
 

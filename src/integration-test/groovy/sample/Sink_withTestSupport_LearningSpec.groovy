@@ -1,7 +1,7 @@
-package kafka.sample
+package sample
 
 import grails.testing.mixin.integration.Integration
-import kafka.grails.GrailsSink
+import grails.GrailsSink
 import org.junit.Rule
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.rule.OutputCapture

@@ -1,4 +1,4 @@
-package kafka.sample
+package sample
 
 import grails.testing.mixin.integration.Integration
 import groovy.json.JsonSlurper

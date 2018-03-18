@@ -1,7 +1,7 @@
-package kafka.sample
+package sample
 
 import groovy.util.logging.Slf4j
-import kafka.grails.GrailsSink
+import grails.GrailsSink
 import org.springframework.cloud.stream.annotation.StreamListener
 
 @Slf4j
