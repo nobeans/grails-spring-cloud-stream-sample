@@ -4,14 +4,29 @@ import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
 import grails.util.Holders
 import groovy.util.logging.Slf4j
-import org.springframework.context.annotation.ComponentScan
+import kafka.grails.GrailsSink
+import org.springframework.cloud.stream.annotation.EnableBinding
+import org.springframework.cloud.stream.messaging.Source
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Profile
 
 @Slf4j
-@ComponentScan("kafka.sample")
+@EnableBinding([Source, GrailsSink])
 class Application extends GrailsAutoConfiguration {
 
     static void main(String[] args) {
         GrailsApp.run(Application, args)
+    }
+
+    @Bean
+    MessageProducer messageProducer() {
+        new MessageProducer()
+    }
+
+    @Bean
+    @Profile("development")
+    TraceConsumer traceConsumer() {
+        new TraceConsumer()
     }
 
     @Override
