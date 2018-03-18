@@ -14,8 +14,8 @@ class Application extends GrailsAutoConfiguration {
     }
 
     @Bean
-    MessageProducer messageProducer() {
-        new MessageProducer()
+    TextProducer textProducer() {
+        new TextProducer()
     }
 
     @Bean

@@ -2,9 +2,9 @@ package sample
 
 class BootStrap {
 
-    MessageProducer messageProducer
+    TextProducer textProducer
 
     def init = { servletContext ->
-        messageProducer.startProducingPeriodicallyInThread("Hello", 5000)
+        textProducer.startProducingPeriodicallyInThread("Hello", 5000)
     }
 }

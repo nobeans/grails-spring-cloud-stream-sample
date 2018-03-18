@@ -6,7 +6,7 @@ import org.springframework.cloud.stream.messaging.Source
 import org.springframework.messaging.support.MessageBuilder
 
 @Slf4j
-class MessageProducer {
+class TextProducer {
 
     @Autowired
     Source source
@@ -25,7 +25,7 @@ class MessageProducer {
                     produce(message)
                 }
             } catch (e) {
-                log.error "Failed and terminated running MessageProducer periodically", e
+                log.error "Failed and terminated running TextProducer periodically", e
             }
         }
     }
