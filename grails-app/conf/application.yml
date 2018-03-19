@@ -103,7 +103,7 @@ spring:
 ---
 sample:
   binaryProducer:
-    chunkSize: 1024     # bytes
+    chunkSize: 100000   # bytes
     retryInterval: 1000 # msec
     retryMaxCount: 5    # times
     watchDir: build/tmp/binaryProducer/watch

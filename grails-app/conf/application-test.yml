@@ -1,0 +1,35 @@
+---
+spring:
+  cloud:
+    stream:
+      bindings:
+        text-input:
+          destination: text
+          contentType: application/json
+        text-output:
+          destination: text
+          contentType: application/json
+        binary-input:
+          destination: binary
+          contentType: application/json
+        binary-output:
+          destination: binary
+          contentType: application/json
+      kafka:
+        binder:
+          brokers: 127.0.0.1
+          defaultBrokerPort: 9092
+          zkNodes: 127.0.0.1
+          defaultZkPort: 2181
+          autoCreateTopics: false
+
+---
+sample:
+  binaryProducer:
+    chunkSize: 1024     # bytes
+    retryInterval: 1000 # msec
+    retryMaxCount: 5    # times
+    watchDir: build/tmp/binaryProducer/watch
+  binaryConsumer:
+    workDir:  build/tmp/binaryConsumer/work
+    storeDir: build/tmp/binaryConsumer/store
