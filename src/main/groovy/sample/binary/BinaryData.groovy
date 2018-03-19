@@ -16,11 +16,11 @@ class BinaryData implements Validateable {
         status()
         sequenceId min: 1L
         data nullable: true, validator: { String value, BinaryData self ->
-            if (self.status == ChunkStatus.END_OF_DATA) {
-                return !value
+            if (self.status == ChunkStatus.KEEP_ALIVE) {
+                return value != null && !value.empty
             }
+            return true
         }
-        return true
     }
 
     byte[] getRawData() {
