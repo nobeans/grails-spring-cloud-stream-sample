@@ -36,7 +36,7 @@ class BinaryConsumer {
             // TODO Expected that Kafka's data is ordered. (not using sequenceId so far)
             workDir.mkdirs()
             def workFile = new File(workDir, binaryData.key)
-            workFile.append(binaryData.data)
+            workFile.append(binaryData.decodedData)
             log.info "Appended data: workFile=$workFile, binaryData=$binaryData"
         } else if (binaryData.status == ChunkStatus.END_OF_DATA) {
             def workFile = new File(workDir, binaryData.key)
@@ -68,17 +68,23 @@ class BinaryConsumer {
         String key
         ChunkStatus status
         Long sequenceId
-        String dataEncoded
+        String data
 
         static constraints = {
             key blank: false
             status()
-            sequenceId blank: false
-            dataEncoded blank: false
+            sequenceId min: 1L
+            data nullable: true, validator: { String value, BinaryData self ->
+            if (self.status == ChunkStatus.END_OF_DATA)
+                return !value
+            }
+            return true
         }
 
-        byte[] getData() {
-            dataEncoded.decodeBase64() as byte[]
+        static transients = ['data']
+
+        byte[] getDecodedData() {
+            (data?.decodeBase64() ?: []) as byte[]
         }
     }
 }
