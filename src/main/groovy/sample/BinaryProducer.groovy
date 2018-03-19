@@ -1,7 +1,6 @@
 package sample
 
 import groovy.util.logging.Slf4j
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cloud.stream.messaging.Source
 import org.springframework.messaging.support.MessageBuilder
 
@@ -12,7 +11,7 @@ class BinaryProducer {
 
     int chunkSize = DEFAULT_CHUNK_SIZE // bytes
 
-    @Autowired
+    //@Autowired
     Source source
 
     void produce(String key, InputStream ins) throws IOException {
