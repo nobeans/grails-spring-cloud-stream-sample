@@ -24,27 +24,28 @@ class BinaryProducerSpec extends Specification {
 
     AtomicReference<Throwable> failed = new AtomicReference<>()
 
-    AtomicInteger sequenceId = new AtomicInteger(1)
-
     AtomicReference<List<Byte>> receivedBytes = new AtomicReference<>([])
 
-    MessageHandler handler = { Message<String> message ->
-        try {
-            def json = new JsonSlurper().parseText(message.payload)
-            assert json['key'] == "TEST_KEY"
-            assert json['sequenceId'] == sequenceId.getAndIncrement()
-            receivedBytes.get().addAll json['data'].decodeBase64() as List<Byte>
-        } catch (Throwable e) {
-            failed.set(e)
+    MessageHandler handler = {
+        AtomicInteger sequenceId = new AtomicInteger(1)
+        return { Message<String> message ->
+            try {
+                def json = new JsonSlurper().parseText(message.payload)
+                assert json['key'] == "TEST_KEY"
+                assert json['sequenceId'] == sequenceId.getAndIncrement()
+                receivedBytes.get().addAll json['data'].decodeBase64() as List<Byte>
+            } catch (Throwable e) {
+                failed.set(e)
+            }
         }
-    }
+    }.call()
 
-    void test() {
+    void "produce from data array in memory"() {
         given:
         grailsSink.input().subscribe(handler)
 
         and:
-        sleep 1000
+        sleep 500
 
         and:
         def ins = new ByteArrayInputStream(binaryData)

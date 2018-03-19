@@ -9,7 +9,7 @@ import org.springframework.messaging.MessageHandler
 import org.springframework.messaging.support.MessageBuilder
 import spock.lang.Specification
 
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
 @Integration
 class SourceAndSink_LearningSpec extends Specification {
@@ -22,15 +22,19 @@ class SourceAndSink_LearningSpec extends Specification {
 
     String testMessage = "TEST_MESSAGE-${new Date().format(/yyyyMMdd-HHmmss-SSS/)}"
 
-    AtomicBoolean succeeded = new AtomicBoolean(false)
+    AtomicReference<Throwable> failed = new AtomicReference<>()
 
     MessageHandler handler = { Message<String> message ->
-        def actualText = new JsonSlurper().parseText(message.payload).text
-        succeeded.set(actualText == testMessage)
-        println ">" * 50
-        println "Actual:   $actualText"
-        println "Expected: $testMessage"
-        println "<" * 50
+        try {
+            def actualText = new JsonSlurper().parseText(message.payload).text
+            assert actualText == testMessage
+            println ">" * 50
+            println "Actual:   $actualText"
+            println "Expected: $testMessage"
+            println "<" * 50
+        } catch (Throwable e) {
+            failed.set(e)
+        }
     }
 
     void "subscribe and then send"() {
@@ -47,7 +51,7 @@ class SourceAndSink_LearningSpec extends Specification {
         sleep 1000
 
         then:
-        succeeded.get()
+        !failed.get()
 
         cleanup:
         grailsSink.input().unsubscribe(handler)
@@ -64,7 +68,7 @@ class SourceAndSink_LearningSpec extends Specification {
         sleep 1000
 
         then:
-        succeeded.get()
+        !failed.get()
 
         cleanup:
         grailsSink.input().unsubscribe(handler)
