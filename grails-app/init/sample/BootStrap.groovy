@@ -5,6 +5,10 @@ class BootStrap {
     TextProducer textProducer
 
     def init = { servletContext ->
-        textProducer.startProducingPeriodicallyInThread("Hello", 5000)
+        environments {
+            development {
+                textProducer.startProducingPeriodicallyInThread("Hello", 5000)
+            }
+        }
     }
 }
