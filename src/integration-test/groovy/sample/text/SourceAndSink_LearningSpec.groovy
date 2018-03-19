@@ -1,4 +1,4 @@
-package sample
+package sample.text
 
 import grails.testing.mixin.integration.Integration
 import groovy.json.JsonSlurper

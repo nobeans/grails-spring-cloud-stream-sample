@@ -4,6 +4,14 @@ import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
 import org.springframework.cloud.stream.annotation.EnableBinding
 import org.springframework.context.annotation.Bean
+import sample.binary.BinaryConsumer
+import sample.binary.BinaryProducer
+import sample.binary.BinarySink
+import sample.binary.BinarySource
+import sample.text.TextProducer
+import sample.text.TextSink
+import sample.text.TextSource
+import sample.text.TraceConsumer
 
 @EnableBinding([TextSource, TextSink, BinarySource, BinarySink])
 class Application extends GrailsAutoConfiguration {

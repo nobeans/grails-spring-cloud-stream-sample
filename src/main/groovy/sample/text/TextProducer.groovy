@@ -1,4 +1,4 @@
-package sample
+package sample.text
 
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired

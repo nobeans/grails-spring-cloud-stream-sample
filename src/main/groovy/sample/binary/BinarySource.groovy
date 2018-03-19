@@ -1,12 +1,12 @@
-package sample
+package sample.binary
 
 import org.springframework.cloud.stream.annotation.Output
 import org.springframework.messaging.MessageChannel
 
-interface TextSource {
+interface BinarySource {
 
-    String OUTPUT = "text-output"
+    String OUTPUT = "binary-output"
 
-    @Output(TextSource.OUTPUT)
+    @Output(BinarySource.OUTPUT)
     MessageChannel output()
 }

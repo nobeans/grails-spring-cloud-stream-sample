@@ -1,4 +1,4 @@
-package sample
+package sample.binary
 
 import grails.databinding.SimpleDataBinder
 import grails.databinding.SimpleMapDataBindingSource

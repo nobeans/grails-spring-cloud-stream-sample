@@ -1,5 +1,9 @@
 package sample
 
+import sample.binary.BinaryConsumer
+import sample.text.TextProducer
+import sample.text.TraceConsumer
+
 class BootStrap {
 
     TextProducer textProducer
