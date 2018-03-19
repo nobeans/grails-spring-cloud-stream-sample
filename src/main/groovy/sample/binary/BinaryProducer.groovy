@@ -4,6 +4,7 @@ import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.messaging.support.MessageBuilder
+import sample.io.FileWatcher
 
 @Slf4j
 class BinaryProducer {
@@ -21,6 +22,18 @@ class BinaryProducer {
 
     @Value('${sample.binaryProducer.retryMaxCount}')
     int retryMaxCount
+
+    @Value('${sample.binaryProducer.watchDir}')
+    File watchDir
+
+    void watchDirectory() {
+        watchDir.mkdirs()
+        new FileWatcher(targetDir: watchDir).watch { File file ->
+            file.withInputStream { InputStream ins ->
+                produce(file.name, ins)
+            }
+        }
+    }
 
     void produce(String key, InputStream ins) throws IOException {
         long sequenceId = 1

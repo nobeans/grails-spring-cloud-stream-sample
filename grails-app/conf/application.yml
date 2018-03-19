@@ -106,6 +106,7 @@ sample:
     chunkSize: 1024     # bytes
     retryInterval: 1000 # msec
     retryMaxCount: 5    # times
+    watchDir: build/tmp/binaryProducer/watch
   binaryConsumer:
     workDir:  build/tmp/binaryConsumer/work
     storeDir: build/tmp/binaryConsumer/store
