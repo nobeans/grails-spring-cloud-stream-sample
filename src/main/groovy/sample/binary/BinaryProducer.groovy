@@ -45,10 +45,13 @@ class BinaryProducer {
     }
 
     private void sendData(String key, ChunkStatus status, long sequenceId, byte[] data) {
-        String encoded = data.encodeBase64()
-        def message = MessageBuilder.withPayload([key: key, status: status, sequenceId: sequenceId, data: encoded]).build()
+        def binaryData = new BinaryData(key: key, status: status, sequenceId: sequenceId, rawData: data)
+        if (!binaryData.validate()) {
+            throw new RuntimeException("Invalid data: binaryData=${binaryData.dump()}")
+        }
+        def message = MessageBuilder.withPayload(binaryData.toMap()).build()
         binarySource.output().send(message)
-        log.info "Produced chunk: key=$key, status=$status, sequenceId=$sequenceId, chunk=$encoded"
+        log.info "Produced chunk: key=$key, status=$status, sequenceId=$sequenceId"
     }
 
     private void eachChunk(InputStream ins, int chunkSize, int remainRetryCount, Closure<Void> closure) throws IOException {

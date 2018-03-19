@@ -2,9 +2,7 @@ package sample.binary
 
 import grails.databinding.SimpleDataBinder
 import grails.databinding.SimpleMapDataBindingSource
-import grails.validation.Validateable
 import groovy.json.JsonSlurper
-import groovy.transform.ToString
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -32,23 +30,27 @@ class BinaryConsumer {
 
     private void handler(Message<String> message) {
         def binaryData = parseBinaryData(message)
+
         if (binaryData.status == ChunkStatus.KEEP_ALIVE) {
             // TODO Expected that Kafka's data is ordered. (not using sequenceId so far)
             workDir.mkdirs()
             def workFile = new File(workDir, binaryData.key)
-            workFile.append(binaryData.decodedData)
+            workFile.append(binaryData.rawData)
             log.info "Appended data: workFile=$workFile, binaryData=$binaryData"
+
         } else if (binaryData.status == ChunkStatus.END_OF_DATA) {
             def workFile = new File(workDir, binaryData.key)
             if (!workFile.exists()) {
                 log.warn "Work file not found: workFile=$workFile, binaryData=$binaryData"
+                return
             }
             storeDir.mkdirs()
             def storedFile = new File(storeDir, binaryData.key)
             workFile.renameTo(storedFile)
             log.info "Persisted file: storedFile=$storedFile, binaryData=$binaryData"
+
         } else {
-            assert "Must not come here. If here, it's just a bug."
+            assert "Never arrives here"
         }
     }
 
@@ -61,30 +63,5 @@ class BinaryConsumer {
             throw new RuntimeException("Invalid data: json=$json, binaryData=${binaryData.dump()}")
         }
         return binaryData
-    }
-
-    @ToString(includeNames = true)
-    static class BinaryData implements Validateable {
-        String key
-        ChunkStatus status
-        Long sequenceId
-        String data
-
-        static constraints = {
-            key blank: false
-            status()
-            sequenceId min: 1L
-            data nullable: true, validator: { String value, BinaryData self ->
-            if (self.status == ChunkStatus.END_OF_DATA)
-                return !value
-            }
-            return true
-        }
-
-        static transients = ['data']
-
-        byte[] getDecodedData() {
-            (data?.decodeBase64() ?: []) as byte[]
-        }
     }
 }
