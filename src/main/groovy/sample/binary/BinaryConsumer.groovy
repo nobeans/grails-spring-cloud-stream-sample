@@ -50,11 +50,13 @@ class BinaryConsumer {
     @ToString(includeNames = true)
     static class BinaryData implements Validateable {
         String key
+        ChunkStatus status
         Long sequenceId
         String dataEncoded
 
         static constraints = {
             key blank: false
+            status()
             sequenceId blank: false
             dataEncoded blank: false
         }

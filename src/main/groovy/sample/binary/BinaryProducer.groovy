@@ -25,16 +25,17 @@ class BinaryProducer {
     void produce(String key, InputStream ins) throws IOException {
         long sequenceId = 1
         eachChunk(ins, chunkSize, retryMaxCount) { byte[] data ->
-            sendData(key, sequenceId++, data)
+            sendData(key, ChunkStatus.KEEP_ALIVE, sequenceId++, data)
         }
+        sendData(key, ChunkStatus.END_OF_DATA, sequenceId, [] as byte[])
         log.info "Produced data: key=$key"
     }
 
-    private void sendData(String key, long sequenceId, byte[] data) {
+    private void sendData(String key, ChunkStatus status, long sequenceId, byte[] data) {
         String encoded = data.encodeBase64()
-        def message = MessageBuilder.withPayload([key: key, sequenceId: sequenceId, data: encoded]).build()
+        def message = MessageBuilder.withPayload([key: key, status: status, sequenceId: sequenceId, data: encoded]).build()
         binarySource.output().send(message)
-        log.info "Produced chunk: key=$key, sequenceId=$sequenceId, chunk=$encoded"
+        log.info "Produced chunk: key=$key, status=$status, sequenceId=$sequenceId, chunk=$encoded"
     }
 
     private void eachChunk(InputStream ins, int chunkSize, int remainRetryCount, Closure<Void> closure) throws IOException {

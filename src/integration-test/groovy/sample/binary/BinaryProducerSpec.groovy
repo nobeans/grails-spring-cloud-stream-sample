@@ -38,6 +38,7 @@ class BinaryProducerSpec extends Specification {
             try {
                 def json = new JsonSlurper().parseText(message.payload)
                 assert json['key'] == "TEST_KEY"
+                assert json['status'] == (json['data'] ? ChunkStatus.KEEP_ALIVE : ChunkStatus.END_OF_DATA).name()
                 assert json['sequenceId'] == sequenceId.getAndIncrement()
                 receivedBytes.get().addAll json['data'].decodeBase64() as List<Byte>
             } catch (Throwable e) {
