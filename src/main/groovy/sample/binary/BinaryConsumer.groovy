@@ -7,6 +7,7 @@ import groovy.json.JsonSlurper
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.messaging.Message
 
 @Slf4j
@@ -15,7 +16,8 @@ class BinaryConsumer {
     @Autowired
     BinarySink binarySink
 
-    File storeDir = new File("/tmp/sample")
+    @Value('${sample.binaryConsumer.storeDir}')
+    File storeDir
 
     void subscribe() {
         binarySink.input().subscribe(this.&handler)

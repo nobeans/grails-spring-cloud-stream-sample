@@ -99,3 +99,12 @@ spring:
           zkNodes: 127.0.0.1
           defaultZkPort: 2181
           autoCreateTopics: false
+
+---
+sample:
+  binaryProducer:
+    chunkSize: 1024     # bytes
+    retryInterval: 1000 # msec
+    retryMaxCount: 5    # times
+  binaryConsumer:
+    storeDir: build/tmp/storeDir

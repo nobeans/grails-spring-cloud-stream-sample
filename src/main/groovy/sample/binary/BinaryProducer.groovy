@@ -2,6 +2,7 @@ package sample.binary
 
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.messaging.support.MessageBuilder
 
 @Slf4j
@@ -12,11 +13,14 @@ class BinaryProducer {
     @Autowired
     BinarySource binarySource
 
-    int chunkSize = 1024 // bytes
+    @Value('${sample.binaryProducer.chunkSize}')
+    int chunkSize
 
-    long retryInterval = 1000 // msec
+    @Value('${sample.binaryProducer.retryInterval}')
+    long retryInterval
 
-    int retryMaxCount = 5 // times
+    @Value('${sample.binaryProducer.retryMaxCount}')
+    int retryMaxCount
 
     void produce(String key, InputStream ins) throws IOException {
         long sequenceId = 1
