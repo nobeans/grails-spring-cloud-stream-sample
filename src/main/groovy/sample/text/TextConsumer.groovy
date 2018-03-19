@@ -6,7 +6,7 @@ import org.springframework.messaging.Message
 import org.springframework.messaging.MessageHandler
 
 @Slf4j
-class TraceConsumer {
+class TextConsumer {
 
     @Autowired
     TextSink textSink
@@ -14,7 +14,7 @@ class TraceConsumer {
     // TODO The method with @StreamListener run when the bean is initialized. It's difficult to control start/stop.
     // TODO You can also use @Profile("development"). But in this sample, show you the programmatic way.
 //    @StreamListener(TextSink.INPUT)
-//    void trace(Map<String, Object> payload) {
+//    void consume(Map<String, Object> payload) {
 //        log.info "Consumed: " + payload.dump()
 //    }
 

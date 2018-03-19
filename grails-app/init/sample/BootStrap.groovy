@@ -2,19 +2,19 @@ package sample
 
 import sample.binary.BinaryConsumer
 import sample.text.TextProducer
-import sample.text.TraceConsumer
+import sample.text.TextConsumer
 
 class BootStrap {
 
     TextProducer textProducer
-    TraceConsumer traceConsumer
+    TextConsumer textConsumer
     BinaryConsumer binaryConsumer
 
     def init = { servletContext ->
         environments {
             development {
                 textProducer.startProducingPeriodicallyInThread("Hello", 5000)
-                traceConsumer.subscribe()
+                textConsumer.subscribe()
                 binaryConsumer.subscribe()
             }
         }

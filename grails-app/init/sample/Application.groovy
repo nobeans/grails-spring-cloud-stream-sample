@@ -11,7 +11,7 @@ import sample.binary.BinarySource
 import sample.text.TextProducer
 import sample.text.TextSink
 import sample.text.TextSource
-import sample.text.TraceConsumer
+import sample.text.TextConsumer
 
 @EnableBinding([TextSource, TextSink, BinarySource, BinarySink])
 class Application extends GrailsAutoConfiguration {
@@ -26,8 +26,8 @@ class Application extends GrailsAutoConfiguration {
     }
 
     @Bean
-    TraceConsumer traceConsumer() {
-        new TraceConsumer()
+    TextConsumer textConsumer() {
+        new TextConsumer()
     }
 
     @Bean
