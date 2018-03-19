@@ -16,6 +16,9 @@ class BinaryConsumer {
     @Autowired
     BinarySink binarySink
 
+    @Value('${sample.binaryConsumer.workDir}')
+    File workDir
+
     @Value('${sample.binaryConsumer.storeDir}')
     File storeDir
 
@@ -29,12 +32,24 @@ class BinaryConsumer {
 
     private void handler(Message<String> message) {
         def binaryData = parseBinaryData(message)
-
-        // TODO Expected that Kafka's data is ordered. (not using sequenceId so far)
-        def file = new File(storeDir, binaryData.key)
-        file.append(binaryData.data)
-
-        log.info "Appended: file=$file, binaryData=$binaryData"
+        if (binaryData.status == ChunkStatus.KEEP_ALIVE) {
+            // TODO Expected that Kafka's data is ordered. (not using sequenceId so far)
+            workDir.mkdirs()
+            def workFile = new File(workDir, binaryData.key)
+            workFile.append(binaryData.data)
+            log.info "Appended data: workFile=$workFile, binaryData=$binaryData"
+        } else if (binaryData.status == ChunkStatus.END_OF_DATA) {
+            def workFile = new File(workDir, binaryData.key)
+            if (!workFile.exists()) {
+                log.warn "Work file not found: workFile=$workFile, binaryData=$binaryData"
+            }
+            storeDir.mkdirs()
+            def storedFile = new File(storeDir, binaryData.key)
+            workFile.renameTo(storedFile)
+            log.info "Persisted file: storedFile=$storedFile, binaryData=$binaryData"
+        } else {
+            assert "Must not come here. If here, it's just a bug."
+        }
     }
 
     private static BinaryData parseBinaryData(Message<String> message) {
@@ -45,6 +60,7 @@ class BinaryConsumer {
         if (!binaryData.validate()) {
             throw new RuntimeException("Invalid data: json=$json, binaryData=${binaryData.dump()}")
         }
+        return binaryData
     }
 
     @ToString(includeNames = true)

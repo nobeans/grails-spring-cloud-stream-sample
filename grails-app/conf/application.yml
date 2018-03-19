@@ -107,4 +107,5 @@ sample:
     retryInterval: 1000 # msec
     retryMaxCount: 5    # times
   binaryConsumer:
-    storeDir: build/tmp/storeDir
+    workDir:  build/tmp/binaryConsumer/work
+    storeDir: build/tmp/binaryConsumer/store
