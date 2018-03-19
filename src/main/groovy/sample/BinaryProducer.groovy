@@ -8,35 +8,52 @@ import org.springframework.messaging.support.MessageBuilder
 @Slf4j
 class BinaryProducer {
 
-    private static final int DEFAULT_CHUNK_SIZE = 1024 // bytes
-
-    int chunkSize = DEFAULT_CHUNK_SIZE // bytes
+    private static final int EOF = -1
 
     @Autowired
     Source source
 
+    int chunkSize = 1024 // bytes
+
+    long retryInterval = 1000 // msec
+
+    int retryMaxCount = 5 // times
+
     void produce(String key, InputStream ins) throws IOException {
-        eachChunk(chunkSize, ins) { int sequenceId, byte[] data ->
-            sendData(key, sequenceId, data)
+        long sequenceId = 1
+        eachChunk(ins, chunkSize, retryMaxCount) { byte[] data ->
+            sendData(key, sequenceId++, data)
         }
         log.info "Produced data: key=$key"
     }
 
-    private void sendData(String key, int sequenceId, byte[] data) {
+    private void sendData(String key, long sequenceId, byte[] data) {
         String encoded = data.encodeBase64()
         def message = MessageBuilder.withPayload([key: key, sequenceId: sequenceId, data: encoded]).build()
         source.output().send(message)
         log.info "Produced chunk: key=$key, sequenceId=$sequenceId, chunk=$encoded"
     }
 
-    private static void eachChunk(int chunkSize, InputStream ins, Closure<Void> closure) throws IOException {
+    private void eachChunk(InputStream ins, int chunkSize, int remainRetryCount, Closure<Void> closure) throws IOException {
         byte[] buffer = new byte[chunkSize]
         int readLength = -1
-        int sequenceId = 1
-        while ((readLength = ins.read(buffer, 0, buffer.length)) != -1) {
+        while ((readLength = ins.read(buffer, 0, buffer.length)) != EOF) {
+            // Reset count when data is found
+            remainRetryCount = retryMaxCount
+
             byte[] data = new byte[readLength]
             System.arraycopy(buffer, 0, data, 0, readLength)
-            closure.call(sequenceId++, data)
+            closure.call(data)
         }
+        log.info "EOF found"
+
+        // Retrying if possible
+        if (remainRetryCount <= 0) {
+            log.info "Retry count exceeded"
+            return
+        }
+        log.info "Sleeping and retrying...: retryInterval=$retryInterval, remainRetryCount=${remainRetryCount - 1}"
+        sleep retryInterval
+        eachChunk(ins, chunkSize, remainRetryCount - 1, closure)
     }
 }
