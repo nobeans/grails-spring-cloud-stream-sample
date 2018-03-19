@@ -1,13 +1,32 @@
 package sample
 
 import groovy.util.logging.Slf4j
-import org.springframework.cloud.stream.annotation.StreamListener
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.messaging.Message
+import org.springframework.messaging.MessageHandler
 
 @Slf4j
 class TraceConsumer {
 
-    @StreamListener(GrailsSink.INPUT)
-    void trace(Map<String, Object> payload) {
-        log.info "Consumed: " + payload.dump()
+    @Autowired
+    GrailsSink grailsSink
+
+    // TODO The method with @StreamListener run when the bean is initialized. It's difficult to control start/stop.
+    // TODO You can also use @Profile("development"). But in this sample, show you the programmatic way.
+//    @StreamListener(GrailsSink.INPUT)
+//    void trace(Map<String, Object> payload) {
+//        log.info "Consumed: " + payload.dump()
+//    }
+
+    MessageHandler handler = { Message message ->
+        log.info "Consumed: " + message.payload.dump()
+    }
+
+    void subscribe() {
+        grailsSink.input().subscribe(handler)
+    }
+
+    void unsubscribe() {
+        grailsSink.input().unsubscribe(handler)
     }
 }
