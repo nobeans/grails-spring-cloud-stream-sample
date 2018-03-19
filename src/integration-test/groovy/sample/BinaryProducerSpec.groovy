@@ -21,7 +21,7 @@ class BinaryProducerSpec extends Specification {
     BinaryProducer binaryProducer
 
     @Autowired
-    GrailsSink grailsSink
+    BinarySink binarySink
 
     @Rule
     TemporaryFolder tempFolder = new TemporaryFolder()
@@ -47,11 +47,11 @@ class BinaryProducerSpec extends Specification {
     }.call()
 
     void setup() {
-        grailsSink.input().subscribe(handler)
+        binarySink.input().subscribe(handler)
     }
 
     void cleanup() {
-        grailsSink.input().unsubscribe(handler)
+        binarySink.input().unsubscribe(handler)
     }
 
     void "produce from data array in memory"() {

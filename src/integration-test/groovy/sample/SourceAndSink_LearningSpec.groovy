@@ -3,7 +3,6 @@ package sample
 import grails.testing.mixin.integration.Integration
 import groovy.json.JsonSlurper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cloud.stream.messaging.Source
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageHandler
 import org.springframework.messaging.support.MessageBuilder
@@ -15,10 +14,10 @@ import java.util.concurrent.atomic.AtomicReference
 class SourceAndSink_LearningSpec extends Specification {
 
     @Autowired
-    Source source
+    TextSource textSource
 
     @Autowired
-    GrailsSink grailsSink
+    TextSink textSink
 
     String testMessage = "TEST_MESSAGE-${new Date().format(/yyyyMMdd-HHmmss-SSS/)}"
 
@@ -39,13 +38,13 @@ class SourceAndSink_LearningSpec extends Specification {
 
     void "subscribe and then send"() {
         when:
-        grailsSink.input().subscribe(handler)
+        textSink.input().subscribe(handler)
 
         and:
         sleep 500
 
         and:
-        source.output().send(MessageBuilder.withPayload([text: testMessage]).build())
+        textSource.output().send(MessageBuilder.withPayload([text: testMessage]).build())
 
         and:
         sleep 1000
@@ -54,15 +53,18 @@ class SourceAndSink_LearningSpec extends Specification {
         !failed.get()
 
         cleanup:
-        grailsSink.input().unsubscribe(handler)
+        textSink.input().unsubscribe(handler)
     }
 
     void "send and then subscribe"() {
         when:
-        source.output().send(MessageBuilder.withPayload([text: testMessage]).build())
+        textSource.output().send(MessageBuilder.withPayload([text: testMessage]).build())
 
         and:
-        grailsSink.input().subscribe(handler)
+        sleep 500
+
+        and:
+        textSink.input().subscribe(handler)
 
         and:
         sleep 1000
@@ -71,6 +73,6 @@ class SourceAndSink_LearningSpec extends Specification {
         !failed.get()
 
         cleanup:
-        grailsSink.input().unsubscribe(handler)
+        textSink.input().unsubscribe(handler)
     }
 }

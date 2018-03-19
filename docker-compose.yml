@@ -20,7 +20,7 @@ services:
       LC_ALL: C
       KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: topic:1:1,topic2:1:2
+      KAFKA_CREATE_TOPICS: text:1:1,binary:1:1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 

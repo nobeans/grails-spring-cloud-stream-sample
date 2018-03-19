@@ -10,7 +10,7 @@ class BootStrap {
         environments {
             development {
                 textProducer.startProducingPeriodicallyInThread("Hello", 5000)
-                //traceConsumer.subscribe()
+                traceConsumer.subscribe()
                 binaryConsumer.subscribe()
             }
         }

@@ -9,11 +9,11 @@ import org.springframework.messaging.MessageHandler
 class TraceConsumer {
 
     @Autowired
-    GrailsSink grailsSink
+    TextSink textSink
 
     // TODO The method with @StreamListener run when the bean is initialized. It's difficult to control start/stop.
     // TODO You can also use @Profile("development"). But in this sample, show you the programmatic way.
-//    @StreamListener(GrailsSink.INPUT)
+//    @StreamListener(TextSink.INPUT)
 //    void trace(Map<String, Object> payload) {
 //        log.info "Consumed: " + payload.dump()
 //    }
@@ -23,10 +23,10 @@ class TraceConsumer {
     }
 
     void subscribe() {
-        grailsSink.input().subscribe(handler)
+        textSink.input().subscribe(handler)
     }
 
     void unsubscribe() {
-        grailsSink.input().unsubscribe(handler)
+        textSink.input().unsubscribe(handler)
     }
 }

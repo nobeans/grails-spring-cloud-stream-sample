@@ -3,10 +3,9 @@ package sample
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
 import org.springframework.cloud.stream.annotation.EnableBinding
-import org.springframework.cloud.stream.messaging.Source
 import org.springframework.context.annotation.Bean
 
-@EnableBinding([Source, GrailsSink])
+@EnableBinding([TextSource, TextSink, BinarySource, BinarySink])
 class Application extends GrailsAutoConfiguration {
 
     static void main(String[] args) {
@@ -19,6 +18,11 @@ class Application extends GrailsAutoConfiguration {
     }
 
     @Bean
+    TraceConsumer traceConsumer() {
+        new TraceConsumer()
+    }
+
+    @Bean
     BinaryProducer binaryProducer() {
         new BinaryProducer()
     }
@@ -26,10 +30,5 @@ class Application extends GrailsAutoConfiguration {
     @Bean
     BinaryConsumer binaryConsumer() {
         new BinaryConsumer()
-    }
-
-    @Bean
-    TraceConsumer traceConsumer() {
-        new TraceConsumer()
     }
 }

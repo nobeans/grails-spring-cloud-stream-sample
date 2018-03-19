@@ -2,7 +2,6 @@ package sample
 
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cloud.stream.messaging.Source
 import org.springframework.messaging.support.MessageBuilder
 
 @Slf4j
@@ -11,7 +10,7 @@ class BinaryProducer {
     private static final int EOF = -1
 
     @Autowired
-    Source source
+    BinarySource binarySource
 
     int chunkSize = 1024 // bytes
 
@@ -30,7 +29,7 @@ class BinaryProducer {
     private void sendData(String key, long sequenceId, byte[] data) {
         String encoded = data.encodeBase64()
         def message = MessageBuilder.withPayload([key: key, sequenceId: sequenceId, data: encoded]).build()
-        source.output().send(message)
+        binarySource.output().send(message)
         log.info "Produced chunk: key=$key, sequenceId=$sequenceId, chunk=$encoded"
     }
 

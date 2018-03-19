@@ -80,11 +80,17 @@ spring:
   cloud:
     stream:
       bindings:
-        grails-input:
-          destination: topic1
+        text-input:
+          destination: text
           contentType: application/json
-        output:
-          destination: topic1
+        text-output:
+          destination: text
+          contentType: application/json
+        binary-input:
+          destination: binary
+          contentType: application/json
+        binary-output:
+          destination: binary
           contentType: application/json
       kafka:
         binder:

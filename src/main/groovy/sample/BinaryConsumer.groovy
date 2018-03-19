@@ -13,16 +13,16 @@ import org.springframework.messaging.Message
 class BinaryConsumer {
 
     @Autowired
-    GrailsSink grailsSink
+    BinarySink binarySink
 
     File storeDir = new File("/tmp/sample")
 
     void subscribe() {
-        grailsSink.input().subscribe(this.&handler)
+        binarySink.input().subscribe(this.&handler)
     }
 
     void unsubscribe() {
-        grailsSink.input().unsubscribe(this.&handler)
+        binarySink.input().unsubscribe(this.&handler)
     }
 
     private void handler(Message<String> message) {
