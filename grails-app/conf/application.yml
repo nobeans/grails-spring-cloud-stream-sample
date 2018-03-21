@@ -88,12 +88,14 @@ spring:
         text-input:
           destination: text
           contentType: application/json
+          group: sample
         text-output:
           destination: text
           contentType: application/json
         binary-input:
           destination: binary
           contentType: application/json
+          group: sample
         binary-output:
           destination: binary
           contentType: application/json
