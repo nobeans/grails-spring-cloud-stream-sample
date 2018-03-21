@@ -20,7 +20,7 @@ class FileWatcher {
         log.info "Start watching: targetDir=$targetDir"
         WatchService watcher = FileSystems.default.newWatchService()
         targetDir.toPath().register(watcher, StandardWatchEventKinds.ENTRY_CREATE)
-        Thread.start {
+        Thread.startDaemon {
             while (true) {
                 WatchKey watchKey = watcher.take()
                 log.info "watchKey: watchKey=${watchKey.dump()}"

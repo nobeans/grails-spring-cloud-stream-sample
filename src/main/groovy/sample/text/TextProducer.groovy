@@ -17,7 +17,7 @@ class TextProducer {
     }
 
     void startProducingPeriodicallyInThread(String message, int intervalMsec) {
-        Thread.start {
+        Thread.startDaemon {
             try {
                 while (true) {
                     sleep intervalMsec
