@@ -1,26 +1,77 @@
-version: '2'
+# You should define and export PUBLIC_HOST environment variable before running.
+# If you use Docker for Mac, you can like this:
+# $ export PUBLIC_HOST=docker.for.mac.host.internal
+
+version: "3"
 
 services:
   zookeeper:
     image: wurstmeister/zookeeper
-    ports:
-      - 2181:2181
     environment:
       TZ: Asia/Tokyo
       LANG: ja_JP.utf8
       LC_ALL: C
+    ports:
+      - 2181:2181
+    networks:
+      - kafka-cluster-network
 
   kafka:
     image: wurstmeister/kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: $PUBLIC_HOST
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: text:1:1,binary:1:1
+      #KAFKA_CREATE_TOPICS: text:2:6,binary:2:6
+      TZ: Asia/Tokyo
+      LANG: ja_JP.utf8
+      LC_ALL: C
     ports:
       - 9092:9092
+    networks:
+      - kafka-cluster-network
+
+  trifecta:
+    image: janschultecom/docker-trifecta
+    depends_on:
+      - kafka
     environment:
       TZ: Asia/Tokyo
       LANG: ja_JP.utf8
       LC_ALL: C
-      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: text:1:1,binary:1:1
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      ZK_HOST: zookeeper:2181
+    ports:
+      - 9000:9000
+    networks:
+      - kafka-cluster-network
 
+  kafka-rest:
+    image: confluentinc/cp-kafka-rest
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_REST_HOST_NAME: kafka-rest
+      KAFKA_REST_LISTENERS: http://kafka-rest:8082
+      TZ: Asia/Tokyo
+      LANG: ja_JP.utf8
+      LC_ALL: C
+    networks:
+      - kafka-cluster-network
+
+  kafka-topic-ui:
+    image: landoop/kafka-topics-ui
+    depends_on:
+        - kafka-rest
+    environment:
+      KAFKA_REST_PROXY_URL: http://kafka-rest:8082
+      PROXY: "true"
+    ports:
+      - 8000:8000
+    networks:
+      - kafka-cluster-network
+
+networks:
+  kafka-cluster-network:
